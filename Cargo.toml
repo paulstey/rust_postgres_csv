@@ -1,0 +1,9 @@
+[package]
+name = "rust_postgres_app"
+version = "0.1.0"
+authors = ["paulstey <paulstey@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+postgres = "0.15.0"
+csv = "1"
