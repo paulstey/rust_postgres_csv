@@ -1,45 +1,41 @@
 extern crate postgres;
+extern crate rust_postgres_csv;
 
 use postgres::{Connection, TlsMode};
 
-struct Person {
-    id: i32,
-    name: String,
-    data: Option<Vec<u8>>,
-}
+
+use self::rust_postgres_csv::table;
+use self::rust_postgres_csv::facility::{self, Facility};
 
 fn main() {
     let conn = Connection::connect("postgresql://postgres@localhost:5432", TlsMode::None).unwrap();
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS person (
-            id              SERIAL PRIMARY KEY,
-            name            VARCHAR NOT NULL,
-            data            BYTEA
-        )",
-        &[],
-    )
-    .unwrap();
-    let me = Person {
-        id: 0,
-        name: "Jones".to_owned(),
-        data: Some("Is this it?".as_bytes().to_owned()),
+    let fac = Facility {
+        fac_name: "ikea",
+        fac_street: "ikea drive w.",
+        fac_city: "providence",
+        fac_state: "ri",
+        fac_zip: "02903",
+        registry_id: 10000008,
+        fac_county: "pvd",
+        fac_epa_region: 1,
     };
-    conn.execute(
-        "INSERT INTO person (name, data) VALUES ($1, $2)",
-        &[&me.name, &me.data],
-    )
-    .unwrap();
 
-    for row in &conn
-        .query("SELECT id, name, data FROM person", &[])
-        .unwrap()
-    {
-        let person = Person {
-            id: row.get(0),
-            name: row.get(1),
-            data: row.get(2),
-        };
-        println!("Found person {}", person.name);
-    }
+    // Create `FRS_FACILITY` table using `conn` connection
+    table::create_frs_table(&conn);
+
+    // Insert `fac` struct to `FRS_FACILITY` table
+    facility::insert_frs_facility(&fac, &conn);
+
+    // for row in &conn
+    //     .query("SELECT id, name, data FROM person", &[])
+    //     .unwrap()
+    // {
+    //     let person = Person {
+    //         id: row.get(0),
+    //         name: row.get(1),
+    //         data: row.get(2),
+    //     };
+    //     println!("Found person {}", person.name);
+    // }
 }
