@@ -1,5 +1,5 @@
 [package]
-name = "rust_postgres_app"
+name = "rust_postgres_csv"
 version = "0.1.0"
 authors = ["paulstey <paulstey@gmail.com>"]
 edition = "2018"
@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 postgres = "0.15.0"
 csv = "1"
+serde = { version = "1.0", features = ["derive"] }
