@@ -1,6 +1,6 @@
 // table.rs
 
-use postgres::{Connection, TlsMode};
+use postgres::Connection;
 
 
 pub fn create_frs_table(conn: &Connection) {
